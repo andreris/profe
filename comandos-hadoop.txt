@@ -1,0 +1,114 @@
+SEMANA 5 Y 6 - HADOOP CON DOCKER
+ISIL - CURSO DE BIG DATA
+
+REPOSITORIO BASE DEL CURSO
+
+https://github.com/GxJohan/hadoop_isil
+
+ESTRUCTURA ESPERADA
+
+hadoop_isil/
+├── docker-hadoop/
+├── datos_200mb.csv
+├── README.md
+├── index.html
+└── comandos-hadoop.txt
+
+REGLA IMPORTANTE
+
+Si el comando inicia con docker, normalmente se ejecuta desde tu computadora.
+Si el comando inicia con hdfs dfs, normalmente se ejecuta dentro del contenedor namenode.
+
+A. DESDE TU COMPUTADORA - CLONAR REPOSITORIO BASE Y ABRIR VS CODE
+
+git clone https://github.com/GxJohan/hadoop_isil.git
+cd hadoop_isil
+code .
+
+B. DESDE TU COMPUTADORA - VERIFICAR DOCKER
+
+docker --version
+docker compose version
+docker ps
+
+C. DESDE TU COMPUTADORA - DESCARGAR EL ENTORNO HADOOP
+
+git clone https://github.com/big-data-europe/docker-hadoop.git
+cd docker-hadoop
+
+D. DESDE TU COMPUTADORA - LEVANTAR HADOOP
+Estando dentro de hadoop_isil/docker-hadoop:
+
+docker compose up -d
+docker ps
+
+E. DESDE TU COMPUTADORA - VERIFICAR NOMBRE DEL CSV PESADO
+
+Archivo descargado desde:
+https://examplefile.com/code/csv/200-mb-csv
+
+Mac / Linux:
+
+ls -lh
+
+Windows PowerShell:
+
+dir
+
+Si tiene otro nombre, renombrar:
+
+Mac / Linux:
+
+mv nombre_original.csv datos_200mb.csv
+
+Windows PowerShell:
+
+ren nombre_original.csv datos_200mb.csv
+
+F. DESDE TU COMPUTADORA - COPIAR CSV PESADO AL CONTENEDOR
+
+Si estas en hadoop_isil:
+
+docker cp datos_200mb.csv namenode:/tmp/datos_200mb.csv
+docker exec -it namenode bash
+
+Si estas dentro de docker-hadoop:
+
+docker cp ../datos_200mb.csv namenode:/tmp/datos_200mb.csv
+docker exec -it namenode bash
+
+G. DENTRO DEL CONTENEDOR NAMENODE - SUBIR CSV PESADO A HDFS
+
+hdfs dfs -mkdir -p /data
+hdfs dfs -put -f /tmp/datos_200mb.csv /data/
+hdfs dfs -ls -h /data
+hdfs dfs -head /data/datos_200mb.csv
+exit
+
+H. VERIFICACION EN EL NAVEGADOR
+
+Abrir:
+
+http://localhost:9870
+
+Buscar:
+
+Utilities -> Browse the file system
+
+Revisar:
+
+/data
+
+Tambien puedes abrir:
+
+http://localhost:8088
+
+I. DESDE TU COMPUTADORA - APAGAR HADOOP
+
+Si aun estas dentro del contenedor:
+
+exit
+
+Luego, estando dentro de hadoop_isil/docker-hadoop:
+
+docker compose down
